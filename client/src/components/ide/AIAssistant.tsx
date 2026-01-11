@@ -33,19 +33,32 @@ export function AIAssistant() {
     setInput('');
     setIsThinking(true);
 
-    setTimeout(() => {
-      const responses = [
-        "I've analyzed your code. The `setupWebSocket` function creates a Socket.io server instance and handles real-time events. Here's a breakdown:\n\n1. **Connection handling**: Listens for new client connections\n2. **Room management**: The `join-room` event allows users to join specific workspaces\n3. **Code sync**: `code-change` broadcasts edits to all room members\n4. **Cursor tracking**: `cursor-move` enables multi-cursor visibility\n\nWould you like me to suggest any improvements?",
-        "Looking at your Express routes, I notice a few potential issues:\n\n⚠️ **Missing error types**: The `executeCode` function should have proper TypeScript error typing\n\n⚠️ **No rate limiting**: Consider adding rate limiting to the `/execute` endpoint\n\n✅ **Good practice**: Health check endpoint is properly implemented\n\nShall I help you fix these issues?",
-        "Here are some optimizations I'd suggest:\n\n```typescript\n// Use connection pooling\nconst io = new Server(server, {\n  cors: { origin: '*' },\n  connectionStateRecovery: {\n    maxDisconnectionDuration: 2 * 60 * 1000\n  }\n});\n```\n\nThis enables automatic reconnection for temporary disconnects, improving user experience.",
-      ];
-      
-      addAIMessage({ 
-        role: 'assistant', 
-        content: responses[Math.floor(Math.random() * responses.length)] 
+    try {
+      const storedKey = localStorage.getItem("openai_api_key");
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, apiKey: storedKey }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to get AI response");
+      }
+
+      addAIMessage({
+        role: 'assistant',
+        content: data.reply
+      });
+    } catch (error: any) {
+      addAIMessage({
+        role: 'assistant',
+        content: `Error: ${error.message}. Please check your API Key in Settings.`
+      });
+    } finally {
       setIsThinking(false);
-    }, 1500);
+    }
   };
 
   if (!aiPanelOpen) return null;

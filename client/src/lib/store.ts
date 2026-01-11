@@ -55,7 +55,7 @@ interface IDEState {
   isExecuting: boolean;
   workspaceMode: 'standard' | 'interview' | 'mentor' | 'competitive';
   timer: number | null;
-  
+
   setActiveTab: (id: string) => void;
   openFile: (file: FileNode, path: string) => void;
   closeTab: (id: string) => void;
@@ -98,7 +98,7 @@ setupWebSocket(server);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(\`🚀 Server running on port \${PORT}\`);
+  console.log(\`Server running on port \${PORT}\`);
 });`
       },
       {
@@ -226,7 +226,7 @@ Real-time collaborative code editor backend.
 
 - 🔄 Real-time code synchronization
 - 👥 Multi-user collaboration
-- 🚀 Code execution engine
+- Code execution engine
 - 🔒 Secure sandboxed environments
 
 ## Getting Started
@@ -275,7 +275,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   activeTabId: 'src/index.ts',
   terminalOutput: [
     { id: '1', type: 'output', content: '$ npm run dev', timestamp: new Date() },
-    { id: '2', type: 'success', content: '🚀 Server running on port 3000', timestamp: new Date() },
+    { id: '2', type: 'success', content: 'Server running on port 3000', timestamp: new Date() },
     { id: '3', type: 'output', content: 'Watching for file changes...', timestamp: new Date() }
   ],
   collaborators,
@@ -296,11 +296,11 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   timer: null,
 
   setActiveTab: (id) => set({ activeTabId: id }),
-  
+
   openFile: (file, path) => {
     const { openTabs } = get();
     const existingTab = openTabs.find(tab => tab.id === file.id);
-    
+
     if (existingTab) {
       set({ activeTabId: file.id });
     } else {
@@ -311,35 +311,35 @@ export const useIDEStore = create<IDEState>((set, get) => ({
         language: file.language || 'plaintext',
         isDirty: false
       };
-      set({ 
+      set({
         openTabs: [...openTabs, newTab],
-        activeTabId: file.id 
+        activeTabId: file.id
       });
     }
   },
-  
+
   closeTab: (id) => {
     const { openTabs, activeTabId } = get();
     const newTabs = openTabs.filter(tab => tab.id !== id);
     let newActiveId = activeTabId;
-    
+
     if (activeTabId === id) {
       const closedIndex = openTabs.findIndex(tab => tab.id === id);
       newActiveId = newTabs[closedIndex - 1]?.id || newTabs[0]?.id || null;
     }
-    
+
     set({ openTabs: newTabs, activeTabId: newActiveId });
   },
-  
+
   updateFileContent: (id, content) => {
     const { openTabs } = get();
     set({
-      openTabs: openTabs.map(tab => 
+      openTabs: openTabs.map(tab =>
         tab.id === id ? { ...tab, isDirty: true } : tab
       )
     });
   },
-  
+
   addTerminalLine: (line) => {
     const { terminalOutput } = get();
     set({
@@ -350,15 +350,15 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       }]
     });
   },
-  
+
   clearTerminal: () => set({ terminalOutput: [] }),
-  
+
   toggleAIPanel: () => set(state => ({ aiPanelOpen: !state.aiPanelOpen })),
-  
+
   toggleTerminal: () => set(state => ({ terminalOpen: !state.terminalOpen })),
-  
+
   toggleSidebar: () => set(state => ({ sidebarOpen: !state.sidebarOpen })),
-  
+
   addAIMessage: (message) => {
     const { aiMessages } = get();
     set({
@@ -369,23 +369,23 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       }]
     });
   },
-  
+
   runCode: () => {
     const { addTerminalLine, setExecuting } = get();
     setExecuting(true);
     addTerminalLine({ type: 'input', content: '$ npm run dev' });
-    
+
     setTimeout(() => {
       addTerminalLine({ type: 'output', content: 'Compiling TypeScript...' });
     }, 300);
-    
+
     setTimeout(() => {
       addTerminalLine({ type: 'success', content: '✓ Build completed in 234ms' });
-      addTerminalLine({ type: 'success', content: '🚀 Server running on port 3000' });
+      addTerminalLine({ type: 'success', content: 'Server running on port 3000' });
       setExecuting(false);
     }, 1200);
   },
-  
+
   setExecuting: (executing) => set({ isExecuting: executing })
 }));
 

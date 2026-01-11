@@ -1,4 +1,5 @@
 import { Play, Square, Sparkles, Terminal, PanelLeftClose, PanelLeft, Settings, Share2, Users, Clock, GitBranch, Check, ChevronDown, Search, Command } from 'lucide-react';
+import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useIDEStore } from '@/lib/store';
@@ -6,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function Toolbar() {
-  const { 
-    toggleAIPanel, 
-    toggleTerminal, 
-    toggleSidebar, 
+  const {
+    toggleAIPanel,
+    toggleTerminal,
+    toggleSidebar,
     sidebarOpen,
     aiPanelOpen,
     terminalOpen,
@@ -183,8 +184,8 @@ export function Toolbar() {
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button
             className={cn(
-              "gap-2 h-8 bg-gradient-to-r from-cyan to-blue-500 hover:from-cyan/90 hover:to-blue-500/90 text-background font-medium",
-              isExecuting && "opacity-80"
+              "gap-2 h-9 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold shadow-lg shadow-cyan-500/20 transition-all duration-300 border-0",
+              isExecuting ? "opacity-90 grayscale-[0.2]" : "hover:shadow-cyan-500/40 hover:-translate-y-0.5"
             )}
             onClick={runCode}
             disabled={isExecuting}
@@ -192,13 +193,13 @@ export function Toolbar() {
           >
             {isExecuting ? (
               <>
-                <Square className="w-3.5 h-3.5" />
-                <span>Stop</span>
+                <Square className="w-4 h-4 fill-white/20" />
+                <span className="tracking-wide">STOP</span>
               </>
             ) : (
               <>
-                <Play className="w-3.5 h-3.5" />
-                <span>Run</span>
+                <Play className="w-4 h-4 fill-white" />
+                <span className="tracking-wide">RUN CODE</span>
               </>
             )}
           </Button>
@@ -218,14 +219,16 @@ export function Toolbar() {
           <TooltipContent side="bottom">Share Workspace</TooltipContent>
         </Tooltip>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-8 h-8"
-          data-testid="settings-btn"
-        >
-          <Settings className="w-4 h-4" />
-        </Button>
+        <Link href="/settings">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-8 h-8"
+            data-testid="settings-btn"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+        </Link>
       </div>
     </div>
   );
